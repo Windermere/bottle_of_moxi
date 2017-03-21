@@ -4,7 +4,7 @@ const MONITOR_URI = 'http://jenkins-np.moxi.bz/cc.xml';
 const MONITOR_INTERVAL = 5000; //ms
 const APP_ID = 'adc655ba-638a-45b8-b6a5-f8dab7e31f0d';
 const APP_PASS = '57QbFJk0HxAhLEqbRVOe70m';
-const APP_PORT = 5678; // 48910;
+const APP_PORT =  48910;
 
 let ChatServer = require('./ChatServer');
 let MoxiBot = require('./MoxiBot');

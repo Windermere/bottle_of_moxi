@@ -1,4 +1,6 @@
-class HelpRequestsController {
+let ApplicationController = require('./ApplicationController');
+
+class HelpRequestsController extends ApplicationController {
 
 
   static showGeneralHelp(session, bot) {

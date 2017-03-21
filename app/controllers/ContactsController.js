@@ -1,4 +1,6 @@
-class ContactsController {
+let ApplicationController = require('./ApplicationController');
+
+class ContactsController extends ApplicationController {
 
 
   static contactRelationUpdate(message, bot) {

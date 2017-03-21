@@ -10,11 +10,12 @@ class Subscription {
     return Subscription._storage;
 }
 
-  static create(session) {
-    var text = session.message.text;
-    var subscription = Subscription.requestNameFor(text);
-    var subName = Subscription.configSubName(subscription);
-    Subscription.addSubscriberFor(subName, session);
+  static create(opts) {
+    // console.log("sub => " + JSON.stringify(opts));
+
+    Subscription.addSubscriberFor(opts.subName, opts.session);
+    var subscription = new Subscription(opts);
+    return subscription;
   }
 
   static find(opts) {
@@ -39,10 +40,12 @@ class Subscription {
     Subscription.storage().setItemSync(subscriptionName, sub);
   }
 
-  static requestNameFor(name) {
-    var woc = name.substr(name.indexOf(" ") + 1);
-    var wsc = woc.substr(woc.indexOf(" ") + 1);
-    return wsc;
+
+  constructor(opts) {
+    this.text = opts.text;
+    this.subName = opts.subName;
+    this.subType = opts.subType;
+    this.session = opts.session;
   }
 
 
