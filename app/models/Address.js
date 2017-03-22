@@ -2,7 +2,7 @@
 class Address {
 
   static storage() {
-    if(Address._storage) {
+    if (Address._storage) {
       return Address._storage;
     }
     Address._storage = require('node-persist');
@@ -15,13 +15,13 @@ class Address {
   }
 
   static create(session) {
-    var sub = Address.fetchAddresses();
+    const sub = Address.fetchAddresses();
     sub[session.message.address.id] = session.message.address;
     Address.saveAll(sub);
   }
 
   static find(opts) {
-    var subs = Address.fetchAddresses();
+    const subs = Address.fetchAddresses();
     return subs[opts.session.message.address.id];
   }
 
@@ -30,12 +30,12 @@ class Address {
   }
 
   static fetchAddresses() {
-    var sub = Address.storage().getItemSync(Address.storeName()) || {};
+    const sub = Address.storage().getItemSync(Address.storeName()) || {};
     return sub;
   }
 
   static removeAddressFor(session) {
-    var sub = Address.fetchAddresses();
+    const sub = Address.fetchAddresses();
     delete sub[session.message.address.id];
     Address.saveAll(sub);
   }

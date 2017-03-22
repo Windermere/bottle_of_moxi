@@ -1,7 +1,7 @@
-'use strict';
-let request = require('request');
-let xml2js = require('xml2js');
-let JenkinsSubscriptionsController = require('../controllers/JenkinsSubscriptionsController')
+
+const request = require('request');
+const xml2js = require('xml2js');
+const JenkinsSubscriptionsController = require('../controllers/JenkinsSubscriptionsController');
 
 class JenkinsBuildMonitor {
 
@@ -20,9 +20,9 @@ class JenkinsBuildMonitor {
     request(this.uri, (error, response, body) => {
       if (!error && response.statusCode === 200) {
         xml2js.parseString(body, (error, data) => {
-          let builds = data['Projects']['Project'].map(project => project.$);
-          builds.forEach(build => {
-            let previousBuild = this.previousBuilds[build.name];
+          const builds = data.Projects.Project.map(project => project.$);
+          builds.forEach((build) => {
+            const previousBuild = this.previousBuilds[build.name];
             if (!previousBuild || build.lastBuildLabel !== previousBuild.lastBuildLabel) {
               this.handleTransition(previousBuild, build);
             }
@@ -30,26 +30,26 @@ class JenkinsBuildMonitor {
           });
         });
       } else {
-        console.log('WARNING! Update failed: ' + error);
+        console.log(`WARNING! Update failed: ${error}`);
       }
       setTimeout(this.update.bind(this), this.interval);
     });
   }
 
   handleTransition(previousBuild, build) {
-    let transition = (previousBuild ? previousBuild.lastBuildStatus : 'Unknown') + ' > ' + build.lastBuildStatus;
+    const transition = `${previousBuild ? previousBuild.lastBuildStatus : 'Unknown'} > ${build.lastBuildStatus}`;
     switch (transition) {
       case 'Success > Failure':
-        JenkinsSubscriptionsController.failed(this.bot, build)
+        JenkinsSubscriptionsController.failed(this.bot, build);
         break;
       case 'Failure > Failure':
-        JenkinsSubscriptionsController.failedAgain(this.bot, build)
+        JenkinsSubscriptionsController.failedAgain(this.bot, build);
         break;
       case 'Failure > Success':
-        JenkinsSubscriptionsController.fixed(this.bot, build)
+        JenkinsSubscriptionsController.fixed(this.bot, build);
         break;
       case 'Success > Success':
-        JenkinsSubscriptionsController.deployed(this.bot, build)
+        JenkinsSubscriptionsController.deployed(this.bot, build);
         break;
     }
   }

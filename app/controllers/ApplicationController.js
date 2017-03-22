@@ -1,24 +1,24 @@
 import '../helpers/ApplicationHelper';
 
-let Handlebars =  require('handlebars');
+const Handlebars = require('handlebars');
+const fs = require('fs');
+const path = require('path');
 
 class ApplicationController {
 
   static renderTemplate(fileName, opts) {
-    var contents = this.getContents(fileName);
-    var output = Handlebars.compile(contents, opts);
+    const contents = this.getContents(fileName);
+    const output = Handlebars.compile(contents, opts);
     return output;
   }
 
   static getContents(fileName) {
-    var fs = require('fs');
-    var path = require('path');
     try {
-      return fs.readFileSync(path.join(__dirname,  '../views/' + fileName + '.handlebars'), 'utf8');
+      return fs.readFileSync(path.join(__dirname, `../views/${fileName}.handlebars`), 'utf8');
     } catch (ex) {
       return null;
     }
   }
 }
 
-module.exports = ApplicationController
+module.exports = ApplicationController;

@@ -1,2 +1,2 @@
-let ApplicationHelper = require('./ApplicationHelper');
+const ApplicationHelper = require('./ApplicationHelper');
 

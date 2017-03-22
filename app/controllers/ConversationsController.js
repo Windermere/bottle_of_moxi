@@ -1,9 +1,9 @@
-let ApplicationController = require('./ApplicationController');
+const ApplicationController = require('./ApplicationController');
 
 class ConversationsController extends ApplicationController {
 
   static converse(session) {
-    session.send(`derp`);
+    session.send('derp');
   }
 }
 

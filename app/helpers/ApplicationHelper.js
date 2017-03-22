@@ -1,8 +1,8 @@
 
-let Handlebars =  require('handlebars');
-let Emoji = require('node-emoji')
+const Handlebars = require('handlebars');
+const Emoji = require('node-emoji');
 
-Handlebars.registerHelper('showEmoji', function(text) {
-  var emoji = Emoji.get(text);
+Handlebars.registerHelper('showEmoji', (text) => {
+  const emoji = Emoji.get(text);
   return new Handlebars.SafeString(emoji);
 });
