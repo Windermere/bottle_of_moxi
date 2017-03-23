@@ -1,7 +1,27 @@
 const SubscriptionsController = require('./SubscriptionsController');
 const ApplicationController = require('./ApplicationController');
+const Jenkins = require('../models/Jenkins');
 
 class JenkinsSubscriptionsController extends SubscriptionsController {
+
+  static handleTransition(bot, previousBuild, build) {
+    const transition = `${previousBuild ? previousBuild.lastBuildStatus : 'Unknown'} > ${build.lastBuildStatus}`;
+    switch (transition) {
+      case 'Success > Failure':
+        JenkinsSubscriptionsController.failed(bot, build);
+        break;
+      case 'Failure > Failure':
+        JenkinsSubscriptionsController.failedAgain(bot, build);
+        break;
+      case 'Failure > Success':
+        JenkinsSubscriptionsController.fixed(bot, build);
+        break;
+      case 'Success > Success':
+        JenkinsSubscriptionsController.deployed(bot, build);
+        break;
+    }
+  }
+
   static failed(bot, build) {
     JenkinsSubscriptionsController.messageFor(bot, build, 'JenkinsSubscriptions/failed');
   }
@@ -15,6 +35,8 @@ class JenkinsSubscriptionsController extends SubscriptionsController {
   }
 
   static deployed(bot, build) {
+    const details = Jenkins.find(build);
+    console.log(JSON.stringify(details));
     JenkinsSubscriptionsController.messageFor(bot, build, 'JenkinsSubscriptions/deployed');
   }
 

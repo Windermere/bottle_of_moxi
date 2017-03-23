@@ -8,7 +8,8 @@ class ApplicationController {
 
   static renderTemplate(fileName, opts) {
     const contents = this.getContents(fileName);
-    const output = Handlebars.compile(contents, opts);
+    const template = Handlebars.compile(contents);
+    var output = template(opts);
     return output;
   }
 
