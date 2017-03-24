@@ -5,9 +5,9 @@ class Jenkins {
   static all(uri, buildHandler) {
     request(uri, (error, response, body) => {
       if (!error && response.statusCode === 200) {
-        xml2js.parseString(body, (error, data) => {
+        xml2js.parseString(body, (parseError, data) => {
           const builds = data.Projects.Project.map(project => project.$);
-          builds.forEach((build) => buildHandler(build));
+          builds.forEach(build => buildHandler(build));
         });
       } else {
         console.log(`WARNING! all failed: ${error}`);
@@ -16,13 +16,13 @@ class Jenkins {
   }
 
   static find(build) {
-    const url = `${build.webUrl}${build.lastBuildLabel}/api/json`
+    const url = `${build.webUrl}${build.lastBuildLabel}/api/json`;
+    console.log(`url => ${url}`);
     request(url, (error, response, body) => {
       if (!error && response.statusCode === 200) {
         return JSON.parse(body);
-      } else {
-        console.log(`WARNING! find failed: ${error}`);
       }
+      console.log(`WARNING! find failed: ${error}`);
     });
   }
 }
