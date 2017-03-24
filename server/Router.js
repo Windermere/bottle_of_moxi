@@ -1,10 +1,10 @@
 'use strict';
 
 
-let ContactsController = require( "./app/controllers/ContactsController");
-let ConversationsController = require( "./app/controllers/ConversationsController");
-let HelpRequestsController = require( "./app/controllers/HelpRequestsController");
-let SubscriptionsController = require( "./app/controllers/SubscriptionsController");
+let ContactsController = require( "./../app/controllers/ContactsController");
+let ConversationsController = require( "./../app/controllers/ConversationsController");
+let HelpRequestsController = require( "./../app/controllers/HelpRequestsController");
+let SubscriptionsController = require( "./../app/controllers/SubscriptionsController");
 
 class Router {
 

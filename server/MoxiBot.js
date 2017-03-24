@@ -1,5 +1,5 @@
 
-let Subscription = require('./app/models/Subscription');
+let Subscription = require('./../app/models/Subscription');
 
 class MoxiBot {
   constructor(chatServer) {

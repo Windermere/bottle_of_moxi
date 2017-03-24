@@ -23,33 +23,73 @@ class JenkinsSubscriptionsController extends SubscriptionsController {
   }
 
   static failed(bot, build) {
-    JenkinsSubscriptionsController.messageFor(bot, build, 'JenkinsSubscriptions/failed');
+    Jenkins.find(build, function(details) {
+      JenkinsSubscriptionsController.messageFor(bot, build, details, 'JenkinsSubscriptions/failed');
+    });
   }
 
   static failedAgain(bot, build) {
-    JenkinsSubscriptionsController.messageFor(bot, build, 'JenkinsSubscriptions/failedAgain');
+    Jenkins.find(build, function(details) {
+      JenkinsSubscriptionsController.messageFor(bot, build, details, 'JenkinsSubscriptions/failedAgain');
+    });
   }
 
   static fixed(bot, build) {
-    JenkinsSubscriptionsController.messageFor(bot, build, 'JenkinsSubscriptions/fixed');
+    Jenkins.find(build, function(details) {
+      JenkinsSubscriptionsController.messageFor(bot, build, details, 'JenkinsSubscriptions/fixed');
+    });
   }
 
   static deployed(bot, build) {
-    const details = Jenkins.find(build);
-    console.log(JSON.stringify(details));
-    JenkinsSubscriptionsController.messageFor(bot, build, 'JenkinsSubscriptions/deployed');
+    Jenkins.find(build, function(details) {
+      JenkinsSubscriptionsController.messageFor(bot, build, details, 'JenkinsSubscriptions/deployed');
+    });
   }
 
-  static messageFor(bot, build, template) {
+  static messageFor(bot, build, details, template) {
     if (!bot || !build) {
       throw new Error('bot and build required');
     }
-    const output = this.renderTemplate(template,
-      { build_name: build.name,
-        build_url: `${build.webUrl + build.lastBuildLabel}/`,
-        build_label: build.lastBuildLabel });
-    bot.sendSubscriptionMessage(this.subscriptionNameFor(build), output);
-    console.log(output);
+    console.log(`OUTTTT => ${JSON.stringify(details)}`);
+
+    const actions = details.actions[0];
+    const changes = details.changeSet;
+    const culprits = details.cuptrits;
+    var cause = null;
+    var changeItems = null;
+
+    if(this.detailsHasCause(actions)) {
+      cause = actions.causes[0].shortDescription;
+    }
+    if(this.detailsHasChanges(changes)) {
+      changeItems = changes.items;
+    }
+
+    console.log(`OUTTTT => ${cause}`);
+    console.log(`OUTTTT => ${JSON.stringify(changes)}`);
+    console.log(`OUTTTT => ${JSON.stringify(culprits)}`);
+
+    if(cause && changeItems) {
+      const output = this.renderTemplate(template,
+        {
+          build_name: build.name,
+          build_url: `${build.webUrl + build.lastBuildLabel}/`,
+          build_label: build.lastBuildLabel,
+          cause: cause,
+          changes: changeItems,
+          culprits: culprits
+        });
+      bot.sendSubscriptionMessage(this.subscriptionNameFor(build), output);
+      console.log(output);
+    }
+  }
+
+  static detailsHasChanges(changes) {
+    return (changes !== undefined && changes.items !== undefined && changes.items[0] !== undefined);
+  }
+
+  static detailsHasCause(actions) {
+    return (actions !== undefined && actions.causes !== undefined && actions.causes[0] !== undefined && actions.causes[0].shortDescription !== undefined);
   }
 
   static subscriptionNameFor(build) {

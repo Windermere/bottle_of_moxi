@@ -8,7 +8,7 @@ const APP_PORT =  48910;
 
 let ChatServer = require('./ChatServer');
 let MoxiBot = require('./MoxiBot');
-let JenkinsBuildMonitor = require('./app/monitors/JenkinsBuildMonitor');
+let JenkinsBuildMonitor = require('./../app/monitors/JenkinsBuildMonitor');
 let Router = require('./Router');
 
 let chatServer = new ChatServer(APP_ID, APP_PASS, APP_PORT);

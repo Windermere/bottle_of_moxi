@@ -15,12 +15,12 @@ class Jenkins {
     });
   }
 
-  static find(build) {
+  static find(build, buildHandler) {
     const url = `${build.webUrl}${build.lastBuildLabel}/api/json`;
-    console.log(`url => ${url}`);
     request(url, (error, response, body) => {
       if (!error && response.statusCode === 200) {
-        return JSON.parse(body);
+        const out = JSON.parse(body);
+        buildHandler(out);
       }
       console.log(`WARNING! find failed: ${error}`);
     });
