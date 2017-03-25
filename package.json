@@ -7,7 +7,8 @@
     "start": "babel-node server/run.js --presets es2015,stage-2",
     "dev:start": "nodemon --ignore lib --exec babel-node server/run.js",
     "lint": "eslint -c .eslintrc app",
-    "lint:fix": "eslint -c .eslintrc app --fix"
+    "lint:fix": "eslint -c .eslintrc app --fix",
+    "test": "make test"
   },
   "author": "",
   "license": "ISC",
@@ -26,14 +27,18 @@
     "babel-eslint": "^7.2.0",
     "babel-plugin-transform-class-properties": "^6.23.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-stage-2": "^6.22.0",
+    "chai": "^3.5.0",
     "eslint": "^3.18.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-config-import": "^0.13.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
+    "mocha": "^3.2.0",
+    "nock": "^9.0.9",
     "nodemon": "^1.11.0"
   }
 }
