@@ -24,25 +24,25 @@ class JenkinsSubscriptionsController extends SubscriptionsController {
 
   static failed(bot, build) {
     Jenkins.find(build, function(details) {
-      JenkinsSubscriptionsController.messageFor(bot, build, details, 'JenkinsSubscriptions/failed');
+      JenkinsSubscriptionsController.messageFor(bot, build, details, 'failed');
     });
   }
 
   static failedAgain(bot, build) {
     Jenkins.find(build, function(details) {
-      JenkinsSubscriptionsController.messageFor(bot, build, details, 'JenkinsSubscriptions/failedAgain');
+      JenkinsSubscriptionsController.messageFor(bot, build, details, 'failedAgain');
     });
   }
 
   static fixed(bot, build) {
     Jenkins.find(build, function(details) {
-      JenkinsSubscriptionsController.messageFor(bot, build, details, 'JenkinsSubscriptions/fixed');
+      JenkinsSubscriptionsController.messageFor(bot, build, details, 'fixed');
     });
   }
 
   static deployed(bot, build) {
     Jenkins.find(build, function(details) {
-      JenkinsSubscriptionsController.messageFor(bot, build, details, 'JenkinsSubscriptions/deployed');
+      JenkinsSubscriptionsController.messageFor(bot, build, details, 'deployed');
     });
   }
 
@@ -54,7 +54,7 @@ class JenkinsSubscriptionsController extends SubscriptionsController {
 
     const actions = details.actions[0];
     const changes = details.changeSet;
-    const culprits = details.cuptrits;
+    const culprits = details.culprits;
     var cause = null;
     var changeItems = null;
 
@@ -69,7 +69,7 @@ class JenkinsSubscriptionsController extends SubscriptionsController {
     console.log(`OUTTTT => ${JSON.stringify(changes)}`);
     console.log(`OUTTTT => ${JSON.stringify(culprits)}`);
 
-    if(cause && changeItems) {
+    if(changeItems) {
       const output = this.renderTemplate(template,
         {
           build_name: build.name,
