@@ -36,15 +36,15 @@ describe('renderTemplate', () => {
   });
 
   it('should expect a string object as the first parameter', () => {
-    expect(ApplicationController.renderTemplate.bind(null, {}, {})).to.throw(/Template Name Required/);
+    expect(ApplicationController.renderTemplate.bind(ApplicationController, {}, {})).to.throw(/Template Name Required/);
   });
 
   it('should expect a dictionary object as second parameter', () => {
-    expect(ApplicationController.renderTemplate.bind(null, 'Application/404', 'whatever')).to.throw(/Dictionary Object Required/);
+    expect(ApplicationController.renderTemplate.bind(ApplicationController, 'Application/404', 'whatever')).to.throw(/Dictionary Object Required/);
   });
 
   it('should expect valid template name as first parameter', () => {
-    expect(ApplicationController.renderTemplate.bind(null, 'whatevers2009', {})).to.throw(/Invalid Template Requested/);
+    expect(ApplicationController.renderTemplate.bind(ApplicationController, 'whatevers2009', {})).to.throw(/Invalid Template Requested/);
   });
 });
 

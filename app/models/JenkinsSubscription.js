@@ -1,62 +1,65 @@
-const SubscriptionsController = require('./SubscriptionsController');
-const ApplicationController = require('./ApplicationController');
-const Jenkins = require('../models/Jenkins');
+let Subscription = require('./Subscription');
+let Jenkins = require('./Jenkins');
 
-class JenkinsSubscriptionsController extends SubscriptionsController {
-
-  static handleTransition(bot, previousBuild, build) {
+class JenkinsSubscription extends Subscription {
+  static transitionMessage(previousBuild, build, handler) {
     const transition = `${previousBuild ? previousBuild.lastBuildStatus : 'Unknown'} > ${build.lastBuildStatus}`;
     switch (transition) {
       case 'Success > Failure':
-        JenkinsSubscriptionsController.failed(bot, build);
+        JenkinsSubscription.failedMessage(build, handler);
         break;
       case 'Failure > Failure':
-        JenkinsSubscriptionsController.failedAgain(bot, build);
+        JenkinsSubscription.failedAgainMessage(build, handler);
         break;
       case 'Failure > Success':
-        JenkinsSubscriptionsController.fixed(bot, build);
+        JenkinsSubscription.fixedMessage(build, handler);
         break;
       case 'Success > Success':
-        JenkinsSubscriptionsController.deployed(bot, build);
+        JenkinsSubscription.deployedMessage(build, handler);
         break;
     }
   }
 
-  static failed(bot, build) {
+
+  static failedMessage(build, handler) {
     Jenkins.find(build, function(details) {
-      JenkinsSubscriptionsController.messageFor(bot, build, details, 'failed');
+      const message = JenkinsSubscription.messageFor(build, details, 'failed');
+      handler(message);
     });
   }
 
-  static failedAgain(bot, build) {
+  static failedAgainMessage(build, handler) {
     Jenkins.find(build, function(details) {
-      JenkinsSubscriptionsController.messageFor(bot, build, details, 'failedAgain');
+      const message = JenkinsSubscription.messageFor(build, details, 'failedAgain');
+      handler(message);
     });
   }
 
-  static fixed(bot, build) {
+  static fixedMessage(build, handler) {
     Jenkins.find(build, function(details) {
-      JenkinsSubscriptionsController.messageFor(bot, build, details, 'fixed');
+      const message =  JenkinsSubscription.messageFor(build, details, 'fixed');
+      handler(message);
     });
   }
 
-  static deployed(bot, build) {
+  static deployedMessage(build, handler) {
     Jenkins.find(build, function(details) {
-      JenkinsSubscriptionsController.messageFor(bot, build, details, 'deployed');
+      const message = JenkinsSubscription.messageFor(build, details, 'deployed');
+      handler(message);
     });
   }
 
-  static messageFor(bot, build, details, template) {
-    if (!bot || !build) {
-      throw new Error('bot and build required');
+  static messageFor(build, details, template) {
+    if ( !build) {
+      throw new Error('build required');
     }
-    console.log(`OUTTTT => ${JSON.stringify(details)}`);
 
     const actions = details.actions[0];
     const changes = details.changeSet;
     const culprits = details.culprits;
     var cause = null;
     var changeItems = null;
+    var output = null;
 
     if(this.detailsHasCause(actions)) {
       cause = actions.causes[0].shortDescription;
@@ -65,12 +68,9 @@ class JenkinsSubscriptionsController extends SubscriptionsController {
       changeItems = changes.items;
     }
 
-    console.log(`OUTTTT => ${cause}`);
-    console.log(`OUTTTT => ${JSON.stringify(changes)}`);
-    console.log(`OUTTTT => ${JSON.stringify(culprits)}`);
 
     if(changeItems) {
-      const output = this.renderTemplate(template,
+      output = this.renderTemplate(template,
         {
           build_name: build.name,
           build_url: `${build.webUrl + build.lastBuildLabel}/`,
@@ -79,9 +79,9 @@ class JenkinsSubscriptionsController extends SubscriptionsController {
           changes: changeItems,
           culprits: culprits
         });
-      bot.sendSubscriptionMessage(this.subscriptionNameFor(build), output);
       console.log(output);
     }
+    return output;
   }
 
   static detailsHasChanges(changes) {
@@ -97,4 +97,4 @@ class JenkinsSubscriptionsController extends SubscriptionsController {
   }
 }
 
-module.exports = JenkinsSubscriptionsController;
+module.exports = JenkinsSubscription;

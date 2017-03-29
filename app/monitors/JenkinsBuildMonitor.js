@@ -1,5 +1,5 @@
 
-const JenkinsSubscriptionsController = require('../controllers/JenkinsSubscriptionsController');
+const JenkinsSubscription = require('../models/JenkinsSubscription');
 const Jenkins = require('../models/Jenkins');
 
 class JenkinsBuildMonitor {
@@ -12,19 +12,36 @@ class JenkinsBuildMonitor {
   }
 
   start() {
-    this.update();
+    this.updateLoop();
   }
 
-  update() {
-    Jenkins.all(this.uri, function(build) {
-      const previousBuild = this.previousBuilds[build.name];
-      if (!previousBuild || build.lastBuildLabel !== previousBuild.lastBuildLabel) {
-        JenkinsSubscriptionsController.handleTransition(this.bot, previousBuild, build);
-      }
-      this.previousBuilds[build.name] = build;
-    }.bind(this));
-    setTimeout(this.update.bind(this), this.interval);
+  updateLoop() {
+    this.runJenkinsCheck();
+    setTimeout(this.updateLoop.bind(this), this.interval);
   }
+
+  runJenkinsCheck() {
+    Jenkins.all(this.uri, function(build) {
+      const previousBuild = this.fetchPreviousBuildFor(build.name);
+      if (!previousBuild || build.lastBuildLabel !== previousBuild.lastBuildLabel) {
+        const handler = function(message){
+          //abstract notification
+          this.bot.sendSubscriptionMessage(this.subscriptionNameFor(build), message);
+        }.bind(this);
+        JenkinsSubscription.transitionMessage(previousBuild, build, handler);
+      }
+      this.updateLastBuildFor(build);
+    }.bind(this));
+  }
+
+  fetchPreviousBuildFor(buildName) {
+    return this.previousBuilds[buildName];
+  }
+
+  updateLastBuildFor(build) {
+    this.previousBuilds[build.name] = build;
+  }
+
 }
 
 module.exports = JenkinsBuildMonitor;
