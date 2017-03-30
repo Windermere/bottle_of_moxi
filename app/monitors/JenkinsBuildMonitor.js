@@ -25,13 +25,16 @@ class JenkinsBuildMonitor {
       const previousBuild = this.fetchPreviousBuildFor(build.name);
       if (!previousBuild || build.lastBuildLabel !== previousBuild.lastBuildLabel) {
         const handler = function(message){
-          //abstract notification
-          this.bot.sendSubscriptionMessage(this.subscriptionNameFor(build), message);
+          this.notify(build, message);
         }.bind(this);
         JenkinsSubscription.transitionMessage(previousBuild, build, handler);
       }
       this.updateLastBuildFor(build);
     }.bind(this));
+  }
+
+  notify(build, message) {
+    this.bot.sendSubscriptionMessage(this.subscriptionNameFor(build), message);
   }
 
   fetchPreviousBuildFor(buildName) {
