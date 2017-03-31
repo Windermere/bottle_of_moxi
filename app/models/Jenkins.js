@@ -7,7 +7,7 @@ class Jenkins {
       if (!error && response.statusCode === 200) {
         xml2js.parseString(body, (parseError, data) => {
           const builds = data.Projects.Project.map(project => project.$);
-          builds.forEach(build => buildHandler(build));
+          buildHandler(builds);
         });
       } else {
         console.log(`WARNING! all failed: ${error}`);

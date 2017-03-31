@@ -20,21 +20,30 @@ class JenkinsBuildMonitor {
     setTimeout(this.updateLoop.bind(this), this.interval);
   }
 
-  runJenkinsCheck() {
-    Jenkins.all(this.uri, function(build) {
-      const previousBuild = this.fetchPreviousBuildFor(build.name);
-      if (!previousBuild || build.lastBuildLabel !== previousBuild.lastBuildLabel) {
-        const handler = function(message){
-          this.notify(build, message);
-        }.bind(this);
-        JenkinsSubscription.transitionMessage(previousBuild, build, handler);
-      }
-      this.updateLastBuildFor(build);
-    }.bind(this));
+  runJenkinsCheck(callback) {
+    Jenkins.all(this.uri, this.handleAllBuildsResponse.bind(this), callback);
   }
 
-  notify(build, message) {
-    this.bot.sendSubscriptionMessage(this.subscriptionNameFor(build), message);
+  handleAllBuildsResponse(builds, callback) {
+    builds.forEach(this.handleBuild, this);
+    if (callback) {
+      callback();
+    }
+  }
+
+  handleBuild(build) {
+    const previousBuild = this.fetchPreviousBuildFor(build.name);
+    if (previousBuild && build.lastBuildLabel !== previousBuild.lastBuildLabel) {
+      this.notify(build, previousBuild);
+    }
+    this.updateLastBuildFor(build);
+  }
+
+  notify(build, previousBuild) {
+    const handler = function (message) {
+      this.bot.sendSubscriptionMessage(this.subscriptionNameFor(build), message);
+    }.bind(this);
+    JenkinsSubscription.transitionMessage(previousBuild, build, handler);
   }
 
   fetchPreviousBuildFor(buildName) {
