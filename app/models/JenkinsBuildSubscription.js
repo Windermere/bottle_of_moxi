@@ -1,56 +1,56 @@
 let Subscription = require('./Subscription');
 let Jenkins = require('./Jenkins');
 
-class JenkinsSubscription extends Subscription {
+class JenkinsBuildSubscription extends Subscription {
   static transitionMessage(previousBuild, build, handler) {
     const transition = `${previousBuild ? previousBuild.lastBuildStatus : 'Unknown'} > ${build.lastBuildStatus}`;
     switch (transition) {
       case 'Success > Failure':
-        JenkinsSubscription.failedMessage(build, handler);
+        JenkinsBuildSubscription.failedMessage(build, handler);
         break;
       case 'Failure > Failure':
-        JenkinsSubscription.failedAgainMessage(build, handler);
+        JenkinsBuildSubscription.failedAgainMessage(build, handler);
         break;
       case 'Failure > Success':
-        JenkinsSubscription.fixedMessage(build, handler);
+        JenkinsBuildSubscription.fixedMessage(build, handler);
         break;
       case 'Success > Success':
-        JenkinsSubscription.deployedMessage(build, handler);
+        JenkinsBuildSubscription.deployedMessage(build, handler);
         break;
     }
   }
 
 
   static failedMessage(build, handler) {
-    Jenkins.find(build, function(details) {
-      const message = JenkinsSubscription.messageFor(build, details, 'failed');
+    Jenkins.find(build, function (details) {
+      const message = JenkinsBuildSubscription.messageFor(build, details, 'failed');
       handler(message);
     });
   }
 
   static failedAgainMessage(build, handler) {
-    Jenkins.find(build, function(details) {
-      const message = JenkinsSubscription.messageFor(build, details, 'failedAgain');
+    Jenkins.find(build, function (details) {
+      const message = JenkinsBuildSubscription.messageFor(build, details, 'failedAgain');
       handler(message);
     });
   }
 
   static fixedMessage(build, handler) {
-    Jenkins.find(build, function(details) {
-      const message =  JenkinsSubscription.messageFor(build, details, 'fixed');
+    Jenkins.find(build, function (details) {
+      const message = JenkinsBuildSubscription.messageFor(build, details, 'fixed');
       handler(message);
     });
   }
 
   static deployedMessage(build, handler) {
-    Jenkins.find(build, function(details) {
-      const message = JenkinsSubscription.messageFor(build, details, 'deployed');
+    Jenkins.find(build, function (details) {
+      const message = JenkinsBuildSubscription.messageFor(build, details, 'deployed');
       handler(message);
     });
   }
 
   static messageFor(build, details, template) {
-    if ( !build) {
+    if (!build) {
       throw new Error('build required');
     }
 
@@ -61,15 +61,15 @@ class JenkinsSubscription extends Subscription {
     var changeItems = null;
     var output = null;
 
-    if(this.detailsHasCause(actions)) {
+    if (this.detailsHasCause(actions)) {
       cause = actions.causes[0].shortDescription;
     }
-    if(this.detailsHasChanges(changes)) {
+    if (this.detailsHasChanges(changes)) {
       changeItems = changes.items;
     }
 
 
-    if(changeItems) {
+    if (changeItems) {
       output = this.renderTemplate(template,
         {
           build_name: build.name,
@@ -92,9 +92,15 @@ class JenkinsSubscription extends Subscription {
     return (actions !== undefined && actions.causes !== undefined && actions.causes[0] !== undefined && actions.causes[0].shortDescription !== undefined);
   }
 
+  static notifySubscribers(bot, previousBuild, currentBuild) {
+    JenkinsBuildSubscription.transitionMessage(previousBuild, currentBuild, (message) => {
+      bot.sendSubscriptionMessage(this.subscriptionNameFor(currentBuild), message);
+    });
+  }
+
   static subscriptionNameFor(build) {
-    return `jenkins[${build.name}]`;
+    return `jenkins_build[${build.name}]`;
   }
 }
 
-module.exports = JenkinsSubscription;
+module.exports = JenkinsBuildSubscription;

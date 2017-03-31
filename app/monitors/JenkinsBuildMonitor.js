@@ -1,5 +1,5 @@
 
-const JenkinsSubscription = require('../models/JenkinsSubscription');
+const JenkinsBuildSubscription = require('../models/JenkinsBuildSubscription');
 const Jenkins = require('../models/Jenkins');
 
 class JenkinsBuildMonitor {
@@ -33,6 +33,7 @@ class JenkinsBuildMonitor {
 
   handleBuild(build) {
     const previousBuild = this.fetchPreviousBuildFor(build.name);
+    if(previousBuild)
     if (previousBuild && build.lastBuildLabel !== previousBuild.lastBuildLabel) {
       this.notify(build, previousBuild);
     }
@@ -40,10 +41,7 @@ class JenkinsBuildMonitor {
   }
 
   notify(build, previousBuild) {
-    const handler = function (message) {
-      this.bot.sendSubscriptionMessage(this.subscriptionNameFor(build), message);
-    }.bind(this);
-    JenkinsSubscription.transitionMessage(previousBuild, build, handler);
+    JenkinsBuildSubscription.notifySubscribers(this.bot, previousBuild, build);
   }
 
   fetchPreviousBuildFor(buildName) {

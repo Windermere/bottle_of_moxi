@@ -6,7 +6,7 @@ const expect = chai.expect;
 var nock = require('nock');
 const fs = require('fs');
 const path = require('path');
-const JenkinsSubscription = require('../../../app/models/JenkinsSubscription');
+const JenkinsBuildSubscription = require('../../../app/models/JenkinsBuildSubscription');
 
 describe('JenkinsConnected', function() {
   var allResponse;
@@ -29,7 +29,7 @@ describe('JenkinsConnected', function() {
 
   describe('deployedMessage', function() {
     it('should return a string', function () {
-      JenkinsSubscription.deployedMessage(build, function(message){
+      JenkinsBuildSubscription.deployedMessage(build, function(message){
         assert.equal(typeof message, 'string');
       });
     });
@@ -37,7 +37,7 @@ describe('JenkinsConnected', function() {
 
   describe('failedMessage', function() {
     it('should return a string', function () {
-      JenkinsSubscription.failedMessage(build, function(message){
+      JenkinsBuildSubscription.failedMessage(build, function(message){
         assert.equal(typeof message, 'string');
       });
     });
@@ -45,7 +45,7 @@ describe('JenkinsConnected', function() {
 
   describe('failedAgainMessage', function() {
     it('should return a string', function () {
-      JenkinsSubscription.failedAgainMessage(build, function(message){
+      JenkinsBuildSubscription.failedAgainMessage(build, function(message){
         assert.equal(typeof message, 'string');
       });
     });
@@ -53,7 +53,7 @@ describe('JenkinsConnected', function() {
 
   describe('fixedMessage', function() {
     it('should return a string', function () {
-      JenkinsSubscription.fixedMessage(build, function(message){
+      JenkinsBuildSubscription.fixedMessage(build, function(message){
         assert.equal(typeof message, 'string');
       });
     });
