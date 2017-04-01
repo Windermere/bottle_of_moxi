@@ -30,7 +30,7 @@ describe('JenkinsBuildMonitor Tests', () => {
         assert.equal(typeof prevBuild, 'string');
       });
     });
-    it('the string returned should be a number', () => {
+    it('should return a number in said string', () => {
       buildMonitor.runJenkinsCheck(() => {
         const buildName = 'wms_svc_public-(Build)';
         const prevBuild = buildMonitor.fetchPreviousBuildFor(buildName);

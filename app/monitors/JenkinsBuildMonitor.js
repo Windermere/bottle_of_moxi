@@ -33,9 +33,10 @@ class JenkinsBuildMonitor {
 
   handleBuild(build) {
     const previousBuild = this.fetchPreviousBuildFor(build.name);
-    if(previousBuild)
-    if (previousBuild && build.lastBuildLabel !== previousBuild.lastBuildLabel) {
-      this.notify(build, previousBuild);
+    if (previousBuild) {
+      if (previousBuild && build.lastBuildLabel !== previousBuild.lastBuildLabel) {
+        this.notify(build, previousBuild);
+      }
     }
     this.updateLastBuildFor(build);
   }

@@ -1,5 +1,5 @@
-let Subscription = require('./Subscription');
-let Jenkins = require('./Jenkins');
+const Subscription = require('./Subscription');
+const Jenkins = require('./Jenkins');
 
 class JenkinsBuildSubscription extends Subscription {
   static transitionMessage(previousBuild, build, handler) {
@@ -22,28 +22,28 @@ class JenkinsBuildSubscription extends Subscription {
 
 
   static failedMessage(build, handler) {
-    Jenkins.find(build, function (details) {
+    Jenkins.find(build, (details) => {
       const message = JenkinsBuildSubscription.messageFor(build, details, 'failed');
       handler(message);
     });
   }
 
   static failedAgainMessage(build, handler) {
-    Jenkins.find(build, function (details) {
+    Jenkins.find(build, (details) => {
       const message = JenkinsBuildSubscription.messageFor(build, details, 'failedAgain');
       handler(message);
     });
   }
 
   static fixedMessage(build, handler) {
-    Jenkins.find(build, function (details) {
+    Jenkins.find(build, (details) => {
       const message = JenkinsBuildSubscription.messageFor(build, details, 'fixed');
       handler(message);
     });
   }
 
   static deployedMessage(build, handler) {
-    Jenkins.find(build, function (details) {
+    Jenkins.find(build, (details) => {
       const message = JenkinsBuildSubscription.messageFor(build, details, 'deployed');
       handler(message);
     });
@@ -57,9 +57,9 @@ class JenkinsBuildSubscription extends Subscription {
     const actions = details.actions[0];
     const changes = details.changeSet;
     const culprits = details.culprits;
-    var cause = null;
-    var changeItems = null;
-    var output = null;
+    let cause = null;
+    let changeItems = null;
+    let output = null;
 
     if (this.detailsHasCause(actions)) {
       cause = actions.causes[0].shortDescription;
@@ -75,9 +75,9 @@ class JenkinsBuildSubscription extends Subscription {
           build_name: build.name,
           build_url: `${build.webUrl + build.lastBuildLabel}/`,
           build_label: build.lastBuildLabel,
-          cause: cause,
+          cause,
           changes: changeItems,
-          culprits: culprits
+          culprits
         });
       console.log(output);
     }
