@@ -1,6 +1,6 @@
 
 const JenkinsBuildSubscription = require('../models/JenkinsBuildSubscription');
-const Jenkins = require('../models/Jenkins');
+const Jenkins = require('../models/resource/Jenkins');
 
 class JenkinsBuildMonitor {
 

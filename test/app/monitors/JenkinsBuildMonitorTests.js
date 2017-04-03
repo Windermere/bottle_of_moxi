@@ -37,5 +37,25 @@ describe('JenkinsBuildMonitor Tests', () => {
         assert.true(isNaN(prevBuild));
       });
     });
+    it('should update number for build', () => {
+      buildMonitor.runJenkinsCheck(() => {
+        const buildName = 'wms_svc_public-(Build)';
+        const prevBuild = buildMonitor.fetchPreviousBuildFor(buildName);
+        const p = path.join(__dirname, '../../mock_http_data/');
+        const allUpdatedResponse = fs.readFileSync(`${p}/Jenkins.all.updated.response.xml`, 'utf8');
+        config = { bot: null, uri: 'http://jenkins-np.moxi.bz/cc.xml', interval: 5000 };
+        buildMonitor = new JenkinsBuildMonitor(config);
+        nock('http://jenkins-np.moxi.bz')
+          .get('/cc.xml')
+          .reply(200, allUpdatedResponse);
+        buildMonitor.runJenkinsCheck(() => {
+          const curBuild = buildMonitor.fetchPreviousBuildFor(buildName);
+
+        });
+          // const curBuild = buildMonitor.updateLastBuildFor(build);
+        assert.true(isNaN(prevBuild));
+      });
+    });
+
   });
 });

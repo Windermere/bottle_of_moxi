@@ -1,5 +1,5 @@
 const Subscription = require('./Subscription');
-const Jenkins = require('./Jenkins');
+const Jenkins = require('./resource/Jenkins');
 
 class JenkinsBuildSubscription extends Subscription {
   static transitionMessage(previousBuild, build, handler) {
