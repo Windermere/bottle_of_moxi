@@ -10,6 +10,21 @@ class SubscriptionsController extends ApplicationController {
   }
 
 
+  static deleteSubscription(session) {
+    const text = session.message.text;
+    const subType = this.requestTypeFor(text);
+    const sn = this.requestNameFor(text);
+    const subName = this.configSubName(subType, sn);
+
+    const subscription = Subscription.find({ text, subType, subName, session });
+    const output = this.renderTemplate('Subscriptions/deleteSubscription',
+      { user_name: session.message.user.name,
+        subscription_type: subscription.subType,
+        subscription_name: subscription.subName });
+
+    session.send(output);
+  }
+
   static createSubscription(session) {
     const text = session.message.text;
     const subType = this.requestTypeFor(text);

@@ -1,6 +1,8 @@
 
 const JenkinsBuildSubscription = require('../models/JenkinsBuildSubscription');
 const Jenkins = require('../models/resource/Jenkins');
+const xml2js = require('xml2js');
+const JenkinsBuild = require('../models/JenkinsBuild');
 
 class JenkinsBuildMonitor {
 
@@ -8,7 +10,6 @@ class JenkinsBuildMonitor {
     this.uri = config.uri;
     this.interval = config.interval;
     this.bot = config.bot;
-    this.previousBuilds = {};
   }
 
   start() {
@@ -21,7 +22,14 @@ class JenkinsBuildMonitor {
   }
 
   runJenkinsCheck(callback) {
-    Jenkins.all(this.uri, this.handleAllBuildsResponse.bind(this), callback);
+    Jenkins.fetchAllBuilds(this.uri, this.parseAllBuildsResponse.bind(this), callback);
+  }
+
+  parseAllBuildsResponse(body, callback) {
+    xml2js.parseString(body, (parseError, data) => {
+      const builds = data.Projects.Project.map(project => project.$);
+      this.handleAllBuildsResponse(builds, callback);
+    });
   }
 
   handleAllBuildsResponse(builds, callback) {
@@ -37,6 +45,8 @@ class JenkinsBuildMonitor {
       if (previousBuild && build.lastBuildLabel !== previousBuild.lastBuildLabel) {
         this.notify(build, previousBuild);
       }
+    } else {
+      console.log(`no previous build for ${build.name}`);
     }
     this.updateLastBuildFor(build);
   }
@@ -46,11 +56,17 @@ class JenkinsBuildMonitor {
   }
 
   fetchPreviousBuildFor(buildName) {
-    return this.previousBuilds[buildName];
+    return JenkinsBuild.find({name: buildName});
   }
 
   updateLastBuildFor(build) {
-    this.previousBuilds[build.name] = build;
+    var jenkinsBuild = JenkinsBuild.find({name: build.name});
+    if(!jenkinsBuild) {
+      JenkinsBuild.create({name: build.name, build: build})
+    } else if(build.lastBuildLabel != jenkinsBuild.build.lastBuildLabel) {
+      jenkinsBuild.build = build;
+      jenkinsBuild.save();
+    }
   }
 
 }

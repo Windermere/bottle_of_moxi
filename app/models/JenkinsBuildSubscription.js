@@ -22,28 +22,28 @@ class JenkinsBuildSubscription extends Subscription {
 
 
   static failedMessage(build, handler) {
-    Jenkins.find(build, (details) => {
+    Jenkins.fetchBuild(build, (details) => {
       const message = JenkinsBuildSubscription.messageFor(build, details, 'failed');
       handler(message);
     });
   }
 
   static failedAgainMessage(build, handler) {
-    Jenkins.find(build, (details) => {
+    Jenkins.fetchBuild(build, (details) => {
       const message = JenkinsBuildSubscription.messageFor(build, details, 'failedAgain');
       handler(message);
     });
   }
 
   static fixedMessage(build, handler) {
-    Jenkins.find(build, (details) => {
+    Jenkins.fetchBuild(build, (details) => {
       const message = JenkinsBuildSubscription.messageFor(build, details, 'fixed');
       handler(message);
     });
   }
 
   static deployedMessage(build, handler) {
-    Jenkins.find(build, (details) => {
+    Jenkins.fetchBuild(build, (details) => {
       const message = JenkinsBuildSubscription.messageFor(build, details, 'deployed');
       handler(message);
     });

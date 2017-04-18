@@ -20,6 +20,7 @@
     "node-persist": "^2.0.10",
     "request": "^2.81.0",
     "restify": "^4.3.0",
+    "superagent": "^3.5.2",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {
@@ -38,7 +39,6 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
     "mocha": "^3.2.0",
-    "nock": "^9.0.9",
     "nodemon": "^1.11.0"
   }
 }

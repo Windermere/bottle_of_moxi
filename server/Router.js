@@ -76,6 +76,12 @@ class Router {
         break;
       }
 
+      case("\\unsubscribe"): {
+        var subscriptionType = (pieces.length > 1) ? pieces[1] : null;
+        this.handleUnsubscribeRequest(subscriptionType, session);
+        break;
+      }
+
       default: {
         HelpRequestsController.showCommandHelp(session, bot);
 
@@ -104,6 +110,16 @@ class Router {
     }
 
     SubscriptionsController.createSubscription(session);
+
+  }
+
+  handleUnsubscribeRequest(subscriptionType, session) {
+    if(!subscriptionType) {
+      SubscriptionsController.showInvalidSubscriptionRequest(session);
+      return;
+    }
+
+    SubscriptionsController.deleteSubscription(session);
 
   }
 }

@@ -1,28 +1,27 @@
-const request = require('request');
-const xml2js = require('xml2js');
+var request = require('superagent');
 
 class Jenkins {
-  static all(uri, buildHandler) {
-    request(uri, (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        xml2js.parseString(body, (parseError, data) => {
-          const builds = data.Projects.Project.map(project => project.$);
-          buildHandler(builds);
-        });
-      } else {
-        console.log(`WARNING! all failed: ${error}`);
-      }
-    });
+
+  static fetchAllBuilds(uri, responseHandler, callback) {
+    request.get(uri)
+      .end((err, res) =>{
+        if (!err) {
+          responseHandler(res.text, callback);
+        } else {
+          console.log(`WARNING! all failed: ${err}`);
+        }
+      });
   }
 
-  static find(build, buildHandler) {
-    const url = `${build.webUrl}${build.lastBuildLabel}/api/json`;
-    request(url, (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        const out = JSON.parse(body);
+  static fetchBuild(build, buildHandler) {
+    const uri = `${build.webUrl}${build.lastBuildLabel}/api/json`;
+    request.get(uri).end(function(error, response) {
+      if (!error) {
+        const out = JSON.parse(response);
         buildHandler(out);
+      } else {
+        console.log(`WARNING! find failed: ${error}`);
       }
-      console.log(`WARNING! find failed: ${error}`);
     });
   }
 }
