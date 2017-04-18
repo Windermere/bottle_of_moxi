@@ -19,7 +19,7 @@ class JenkinsBuild {
   static find(opts) {
     const builds = JenkinsBuild.findAll();
     var build =  builds[opts.name];
-    return new JenkinsBuild({name: opts.name, build: build});
+    return (build) ? new JenkinsBuild({name: opts.name, build: build}) : null;
   }
   
   static findAll() {

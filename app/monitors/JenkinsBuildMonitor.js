@@ -63,9 +63,14 @@ class JenkinsBuildMonitor {
     var jenkinsBuild = JenkinsBuild.find({name: build.name});
     if(!jenkinsBuild) {
       JenkinsBuild.create({name: build.name, build: build})
-    } else if(build.lastBuildLabel != jenkinsBuild.build.lastBuildLabel) {
-      jenkinsBuild.build = build;
-      jenkinsBuild.save();
+    } else {
+      if(!jenkinsBuild.build)
+      throw new Error(JSON.stringify(jenkinsBuild));
+
+      if(build.lastBuildLabel !== jenkinsBuild.build.lastBuildLabel) {
+        jenkinsBuild.build = build;
+        jenkinsBuild.save();
+      }
     }
   }
 
