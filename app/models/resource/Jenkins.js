@@ -17,7 +17,7 @@ class Jenkins {
     const uri = `${build.webUrl}${build.lastBuildLabel}/api/json`;
     request.get(uri).end(function(error, response) {
       if (!error) {
-        const out = JSON.parse(response);
+        const out = JSON.parse(response.text);
         buildHandler(out);
       } else {
         console.log(`WARNING! find failed: ${error}`);

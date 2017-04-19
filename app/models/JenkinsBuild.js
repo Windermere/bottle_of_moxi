@@ -11,7 +11,7 @@ class JenkinsBuild {
   }
 
   static create(opts) {
-    const build = new JenkinsBuild({name: opts.name, build: opts.build});
+    const build = new JenkinsBuild(opts);
     build.save();
     return build;
   }
@@ -19,7 +19,7 @@ class JenkinsBuild {
   static find(opts) {
     const builds = JenkinsBuild.findAll();
     var build =  builds[opts.name];
-    return (build) ? new JenkinsBuild({name: opts.name, build: build}) : null;
+    return (build) ? new JenkinsBuild(build) : null;
   }
   
   static findAll() {
@@ -32,12 +32,22 @@ class JenkinsBuild {
 
   constructor(opts) {
     this.name = opts.name;
-    this.build = opts.build;
+    this.activity = opts.activity;
+    this.lastBuildLabel = opts.lastBuildLabel;
+    this.lastBuildStatus = opts.lastBuildStatus;
+    this.lastBuildTime = opts.lastBuildTime;
+    this.webUrl = opts.webUrl;
+  }
+
+  update(build) {
+    var builds = JenkinsBuild.findAll();
+    builds[build.name] = build;
+    JenkinsBuild.storage().setItemSync(JenkinsBuild.storeName(), builds);
   }
 
   save() {
     var builds = JenkinsBuild.findAll();
-    builds[this.name] = this;
+    builds[this.name] = JSON.stringify(this);
     JenkinsBuild.storage().setItemSync(JenkinsBuild.storeName(), builds);
   }
 

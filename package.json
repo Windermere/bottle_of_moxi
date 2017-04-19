@@ -5,6 +5,7 @@
   "main": "server/run.js",
   "scripts": {
     "start": "babel-node server/run.js --presets es2015,stage-2",
+    "startDebug": "babel-node $NODE_DEBUG_OPTION server/run.js --presets es2015,stage-2",
     "dev:start": "nodemon --ignore lib --exec babel-node server/run.js",
     "lint": "eslint -c .eslintrc app",
     "lint:fix": "eslint -c .eslintrc app --fix",

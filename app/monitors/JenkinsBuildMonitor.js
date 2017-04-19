@@ -41,12 +41,11 @@ class JenkinsBuildMonitor {
 
   handleBuild(build) {
     const previousBuild = this.fetchPreviousBuildFor(build.name);
-    if (previousBuild) {
-      if (previousBuild && build.lastBuildLabel !== previousBuild.lastBuildLabel) {
-        this.notify(build, previousBuild);
-      }
-    } else {
-      console.log(`no previous build for ${build.name}`);
+    if (previousBuild && build.lastBuildLabel !== previousBuild.lastBuildLabel) {
+      console.log(`${JSON.stringify(previousBuild)} updating build for ${build.name} ${build.lastBuildLabel} !== ${previousBuild.lastBuildLabel}`);
+      this.notify(build, previousBuild);
+    } else if(!previousBuild) {
+      console.log(`no build for ${build.name} -- creating build record`);
     }
     this.updateLastBuildFor(build);
   }
@@ -59,17 +58,16 @@ class JenkinsBuildMonitor {
     return JenkinsBuild.find({name: buildName});
   }
 
-  updateLastBuildFor(build) {
-    var jenkinsBuild = JenkinsBuild.find({name: build.name});
+  updateLastBuildFor(b) {
+    var jenkinsBuild = JenkinsBuild.find({name: b.name});
     if(!jenkinsBuild) {
-      JenkinsBuild.create({name: build.name, build: build})
+      var build = JenkinsBuild.create(b)
     } else {
-      if(!jenkinsBuild.build)
-      throw new Error(JSON.stringify(jenkinsBuild));
+      if(!jenkinsBuild)
+        throw new Error(JSON.stringify(jenkinsBuild));
 
-      if(build.lastBuildLabel !== jenkinsBuild.build.lastBuildLabel) {
-        jenkinsBuild.build = build;
-        jenkinsBuild.save();
+      if(b.lastBuildLabel !== jenkinsBuild.lastBuildLabel) {
+        jenkinsBuild.update(b);
       }
     }
   }
