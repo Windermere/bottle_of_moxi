@@ -1,11 +1,11 @@
 const Subscription = require('./Subscription');
 const Jenkins = require('./resource/Jenkins');
-const JenkinsBuildController = require('../controllers/JenkinsBuildController');
+const JenkinsBuildsController = require('../controllers/JenkinsBuildsController');
 
 class JenkinsBuildSubscription extends Subscription {
 
   static notifySubscribers(bot, previousBuild, currentBuild) {
-    JenkinsBuildController.transitionMessage(previousBuild, currentBuild, (message) => {
+    JenkinsBuildsController.transitionMessage(previousBuild, currentBuild, (message) => {
       bot.sendSubscriptionMessage(this.subscriptionNameFor(currentBuild), message);
     });
   }

@@ -15,14 +15,14 @@ class Jenkins {
 
   static fetchBuild(build, buildHandler) {
     const uri = `${build.webUrl}${build.lastBuildLabel}/api/json`;
-    request.get(uri).end(function(error, response) {
-      if (!error) {
-        const out = JSON.parse(response.text);
-        buildHandler(out);
-      } else {
-        console.log(`WARNING! find failed: ${error}`);
-      }
-    });
+    request.get(uri)
+      .end((err, res) =>{
+        if (!err) {
+          buildHandler(res.text);
+        } else {
+          console.log(`WARNING! all failed: ${err}`);
+        }
+      });
   }
 }
 

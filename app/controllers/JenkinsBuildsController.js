@@ -1,7 +1,7 @@
 const ApplicationController = require('./ApplicationController');
 const Jenkins = require('../models/resource/Jenkins');
 
-class JenkinsBuildController extends ApplicationController {
+class JenkinsBuildsController extends ApplicationController {
 
   static transitionMessage(previousBuild, build, handler) {
     const transition = `${previousBuild ? previousBuild.lastBuildStatus : 'Unknown'} > ${build.lastBuildStatus}`;
@@ -22,7 +22,8 @@ class JenkinsBuildController extends ApplicationController {
     }
 
     Jenkins.fetchBuild(build, (details) => {
-      const message = JenkinsBuildController.messageFor(build, details, template);
+      const out = JSON.parse(details);
+      const message = JenkinsBuildsController.messageFor(build, out, template);
       handler(message);
     });
   }
@@ -47,7 +48,7 @@ class JenkinsBuildController extends ApplicationController {
     }
 
 
-    if (changeItems) {
+    // if (changeItems) {
       output = this.renderTemplate(template,
         {
           build_name: build.name,
@@ -58,7 +59,7 @@ class JenkinsBuildController extends ApplicationController {
           culprits
         });
       console.log(output);
-    }
+    // }
     return output;
   }
 
@@ -73,4 +74,4 @@ class JenkinsBuildController extends ApplicationController {
 
 }
 
-module.exports = JenkinsBuildController;
+module.exports = JenkinsBuildsController;
