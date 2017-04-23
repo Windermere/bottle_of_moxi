@@ -59,6 +59,7 @@ class ApplicationController {
   static registerPartialsForController() {
     const dirName = this.directoryNameForController();
     if(!registeredPartials[dirName]) {
+
       this.registerPartialsInDirectory(dirName);
       registeredPartials[dirName] = true;
     }
@@ -69,14 +70,13 @@ class ApplicationController {
     const fileNames = fs.readdirSync(p);
     fileNames.forEach(function (file) {
       const matches = /^_([^.]+).handlebars$/.exec(file);
-      if (!matches) {
-        return;
+      if (matches) {
+        const fileName = matches[1];
+        const name = this.nameForPartial(`_${fileName}`);
+        const contents = this.getContents(name);
+        const partialName = (globalScope) ? fileName : this.partialNameForController(fileName);
+        Handlebars.registerPartial(partialName, contents);
       }
-      const fileName = matches[1];
-      const name = this.nameForPartial(`_${fileName}`);
-      const contents = this.getContents(name);
-      const partialName = (globalScope) ? fileName : this.partialNameForController(fileName);
-      Handlebars.registerPartial(partialName, contents);
     }.bind(this));
   }
 
