@@ -12,20 +12,23 @@ class Subscription {
 
   static create(opts) {
     // console.log("sub => " + JSON.stringify(opts));
-
-    Subscription.addSubscriberFor(opts.subName, opts.session);
-    const subscription = new Subscription(opts);
+    this.addSubscriberFor(opts.subName, opts.session);
+    var className = this.toString().split ('(' || /s+/)[0].split (' ' || /s+/)[1];
+    const subscription = new this[className](opts);
     return subscription;
   }
 
   static find(opts) {
-    const subs = Subscription.findAll();
+    const all = this.findAll();
+    var subs = all[opts.name] || {};
     var sub =  subs[opts.session.message.address.id];
-    return (sub) ? new Subscription(sub) : null;
+    var className = this.toString().split ('(' || /s+/)[0].split (' ' || /s+/)[1];
+    const subscription = (sub) ? new this[className](sub) : null;
+    return subscription;
   }
 
   static findAll() {
-    return Subscription.storage().getItemSync(this.storeName()) || {};
+    return this.storage().getItemSync(this.storeName()) || {};
   }
 
 
