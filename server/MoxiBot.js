@@ -7,11 +7,10 @@ class MoxiBot {
     this.builder = chatServer.builder;
   }
 
-  sendSubscriptionMessage(subscriptionName, message) {
-    if(!subscriptionName || !message) {
+  sendSubscriptionMessage(subscribers, message) {
+    if(!subscribers || !message) {
       return;
     }
-    var subscribers = Subscription.fetchSubscribersFor(subscriptionName);
     for(var key in subscribers) {
       var msg = new this.builder.Message()
         .address(subscribers[key])

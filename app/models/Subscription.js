@@ -19,25 +19,34 @@ class Subscription {
   }
 
   static find(opts) {
-    const subs = Subscription.fetchSubscribersFor(opts.name);
-    return subs[opts.session.message.address.id];
+    const subs = Subscription.findAll();
+    var sub =  subs[opts.session.message.address.id];
+    return (sub) ? new Subscription(sub) : null;
   }
 
-  static fetchSubscribersFor(subscriptionName) {
-    const sub = Subscription.storage().getItemSync(subscriptionName) || {};
-    return sub;
+  static findAll() {
+    return Subscription.storage().getItemSync(this.storeName()) || {};
   }
+
 
   static addSubscriberFor(subscriptionName, session) {
-    const sub = Subscription.fetchSubscribersFor(subscriptionName);
-    sub[session.message.address.id] = session.message.address;
-    Subscription.storage().setItemSync(subscriptionName, sub);
+    var all = this.findAll();
+    var subs = all[subscriptionName];
+    subs[session.message.address.id] = session.message.address;
+    all[subscriptionName] = subs;
+    Subscription.storage().setItemSync(this.storeName(), all);
   }
 
   static removeSubscriberFor(subscriptionName, session) {
-    const sub = Subscription.fetchSubscribersFor(subscriptionName);
-    delete sub[session.message.address.id];
-    Subscription.storage().setItemSync(subscriptionName, sub);
+    var all = this.findAll();
+    var subs = all[subscriptionName];
+    delete subs[session.message.address.id];
+    all[subscriptionName] = subs;
+    Subscription.storage().setItemSync(this.storeName(), all);
+  }
+
+  static storeName() {
+    return 'Subscription';
   }
 
 

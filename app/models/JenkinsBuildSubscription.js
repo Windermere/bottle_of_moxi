@@ -6,12 +6,26 @@ class JenkinsBuildSubscription extends Subscription {
 
   static notifySubscribers(bot, previousBuild, currentBuild) {
     JenkinsBuildsController.transitionMessage(previousBuild, currentBuild, (message) => {
-      bot.sendSubscriptionMessage(this.subscriptionNameFor(currentBuild), message);
+      var subscribers = JenkinsBuildSubscription.findAllFor(this.subscriptionNameFor(currentBuild));
+      bot.sendSubscriptionMessage(subscribers, message);
     });
   }
 
   static subscriptionNameFor(build) {
-    return `jenkins_build[${build.name}]`;
+    return build.name;
+  }
+
+  static findAllFor(subscriptionName) {
+    var all = this.findAll();
+    var subs = all[subscriptionName] || [];
+    var wildcard = all['*'] || [];
+    subs.concat(wildcard);
+    return subs;
+  }
+
+
+  static storeName() {
+    return 'JenkinsBuildSubscription';
   }
 }
 
