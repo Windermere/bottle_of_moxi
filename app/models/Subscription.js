@@ -31,7 +31,7 @@ class Subscription {
 
   static addSubscriberFor(subscriptionName, session) {
     var all = this.findAll();
-    var subs = all[subscriptionName];
+    var subs = all[subscriptionName] || {};
     subs[session.message.address.id] = session.message.address;
     all[subscriptionName] = subs;
     Subscription.storage().setItemSync(this.storeName(), all);
@@ -39,7 +39,7 @@ class Subscription {
 
   static removeSubscriberFor(subscriptionName, session) {
     var all = this.findAll();
-    var subs = all[subscriptionName];
+    var subs = all[subscriptionName] || {};
     delete subs[session.message.address.id];
     all[subscriptionName] = subs;
     Subscription.storage().setItemSync(this.storeName(), all);
