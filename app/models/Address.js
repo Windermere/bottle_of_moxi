@@ -16,13 +16,13 @@ class Address {
 
   static create(session) {
     const sub = Address.fetchAddresses();
-    sub[session.message.address.id] = session.message.address;
+    sub[session.message.address.user.id] = session.message.address;
     Address.saveAll(sub);
   }
 
   static find(opts) {
     const subs = Address.fetchAddresses();
-    return subs[opts.session.message.address.id];
+    return subs[opts.session.message.address.user.id];
   }
 
   static saveAll(addresses) {
@@ -36,7 +36,7 @@ class Address {
 
   static removeAddressFor(session) {
     const sub = Address.fetchAddresses();
-    delete sub[session.message.address.id];
+    delete sub[session.message.address.user.id];
     Address.saveAll(sub);
   }
 

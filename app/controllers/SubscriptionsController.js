@@ -14,16 +14,19 @@ class SubscriptionsController extends ApplicationController {
     const text = session.message.text;
     const subType = this.requestTypeFor(text);
     const subName = this.requestNameFor(text);
-    const subID = session.message.address.id;
+    const subID = session.message.address.user.id;
 
     var subscription = this.removeSubscription({ text, subType, subName, subID });
 
-    const output = this.renderTemplate('Subscriptions/deleteSubscription',
-      { user_name: session.message.user.name,
-        subscription_type: subscription.subType,
-        subscription_name: subscription.subName });
+    if(subscription) {
+      const output = this.renderTemplate('Subscriptions/deleteSubscription',
+        { user_name: session.message.user.name,
+          subscription_type: subscription.subType,
+          subscription_name: subscription.subName
+        });
 
-    session.send(output);
+      session.send(output);
+    }
   }
 
   static createSubscription(session) {

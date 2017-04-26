@@ -32,7 +32,7 @@ class JenkinsBuildSubscription extends Subscription {
   }
 
   static delete(opts) {
-    this.removeSubscriberFor(opts.subName, opts.subID);
+    return this.removeSubscriberFor(opts.subName, opts.subID);
   }
 
   static findAllFor(subscriptionName) {
@@ -47,7 +47,7 @@ class JenkinsBuildSubscription extends Subscription {
   static addSubscriberFor(subscriptionName, session) {
     var all = this.findAll();
     var subs = all[subscriptionName] || {};
-    subs[session.message.address.id] = session.message.address;
+    subs[session.message.address.user.id] = session.message.address;
     all[subscriptionName] = subs;
     Subscription.storage().setItemSync(this.storeName(), all);
   }
@@ -55,9 +55,11 @@ class JenkinsBuildSubscription extends Subscription {
   static removeSubscriberFor(subscriptionName, subID) {
     var all = this.findAll();
     var subs = all[subscriptionName] || {};
+    var sub =  subs[subID];
     delete subs[subID];
     all[subscriptionName] = subs;
     Subscription.storage().setItemSync(this.storeName(), all);
+    return sub;
   }
 
   static findAllInGroupFor(name, allSubscriptions) {
