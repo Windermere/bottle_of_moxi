@@ -1,5 +1,12 @@
-{{{showEmoji ':construction_worker:'}}}
-     (slamdunk) Deployed ➔ {{{build_name}}}  {{{showEmoji ':smile_cat:'}}}
-     {{> JenkinsBuilds.gitMessage thar='gaah' }}
-     {{{build_label}}}
-     {{{build_url}}}
+<br/>{{{showEmoji ':construction_worker:'}}} [Jenkins Build]
+<br/>
+<br/>     (slamdunk) Deployed ➔ {{{build_name}}}  {{{showEmoji ':smile_cat:'}}}
+<br/>
+<br/>     {{> JenkinsBuilds.causeMessage cause=cause }}
+<br/>
+<br/>     {{> JenkinsBuilds.gitMessage changes=changes }}
+<br/>
+<br/>     {{> JenkinsBuilds.blameMessage culprits=culprits }}
+<br/>
+<br/>     {{{build_label}}}
+<br/>     {{{build_url}}}
