@@ -21,7 +21,7 @@ class JenkinsBuild {
     var build =  builds[opts.name];
     return (build) ? new JenkinsBuild(build) : null;
   }
-  
+
   static findAll() {
     return JenkinsBuild.storage().getItemSync(JenkinsBuild.storeName()) || {};
   }

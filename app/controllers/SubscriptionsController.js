@@ -13,8 +13,7 @@ class SubscriptionsController extends ApplicationController {
   static deleteSubscription(session) {
     const text = session.message.text;
     const subType = this.requestTypeFor(text);
-    const sn = this.requestNameFor(text);
-    const subName = this.configSubName(subType, sn);
+    const subName = this.requestNameFor(text);
     const subID = session.message.address.id;
 
     var subscription = this.removeSubscription({ text, subType, subName, subID });
@@ -30,8 +29,7 @@ class SubscriptionsController extends ApplicationController {
   static createSubscription(session) {
     const text = session.message.text;
     const subType = this.requestTypeFor(text);
-    const sn = this.requestNameFor(text);
-    const subName = this.configSubName(subType, sn);
+    const subName = this.requestNameFor(text);
 
     const subscription = this.generateSubscription({ text, subType, subName, session });
     const output = this.renderTemplate('Subscriptions/createSubscription',
@@ -80,34 +78,6 @@ class SubscriptionsController extends ApplicationController {
     return wsc;
   }
 
-  static configSubName(type, name) {
-    switch (type.toLowerCase()) {
-      case ('jenkins'): {
-        return this.jenkinsShortcutFor(name);
-        break;
-      }
-    }
-  }
-
-  static jenkinsShortcutFor(name) {
-    switch (name.toLowerCase()) {
-      case ('qa'): {
-        return '(QA Deployment)';
-        break;
-      }
-      case ('devint'): {
-        return '(Devint Distribute)';
-        break;
-      }
-      case ('prod'): {
-        return '(Production Distribute)';
-        break;
-      }
-      default: {
-        return name;
-      }
-    }
-  }
 }
 
 module.exports = SubscriptionsController;

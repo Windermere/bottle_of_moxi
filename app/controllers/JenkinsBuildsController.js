@@ -20,12 +20,13 @@ class JenkinsBuildsController extends ApplicationController {
         template = 'deployed';
         break;
     }
-
-    Jenkins.fetchBuild(build, (details) => {
-      const out = JSON.parse(details);
-      const message = JenkinsBuildsController.messageFor(build, out, template);
-      handler(message);
-    });
+    if(template) {
+      Jenkins.fetchBuild(build, (details) => {
+        const out = JSON.parse(details);
+        const message = JenkinsBuildsController.messageFor(build, out, template);
+        handler(message);
+      });
+    }
   }
 
   static messageFor(build, details, template) {
@@ -48,7 +49,7 @@ class JenkinsBuildsController extends ApplicationController {
     }
 
 
-    // if (changeItems) {
+    if (changeItems) {
       output = this.renderTemplate(template,
         {
           build_name: build.name,
@@ -59,7 +60,7 @@ class JenkinsBuildsController extends ApplicationController {
           culprits
         });
       console.log(output);
-    // }
+    }
     return output;
   }
 

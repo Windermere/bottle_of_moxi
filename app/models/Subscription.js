@@ -19,6 +19,15 @@ class Subscription {
     return 'Subscription';
   }
 
+  static findAllByRegex(obj, filter) {
+    var key, keys = [];
+    for (key in obj) {
+      if (obj.hasOwnProperty(key) && filter.test(key)) {
+        keys.push(key);
+      }
+    }
+    return keys;
+  }
 
   constructor(opts) {
     this.text = opts.text;
