@@ -1,11 +1,9 @@
 <br/>{{{showEmoji ':construction_worker:'}}} [Jenkins Build]
 <br/>
 <br/>     (slamdunk) Deployed ➔ {{{build_name}}} #{{{build_label}}}
-<br/>
-<br/>
-<br/>     {{> JenkinsBuilds.gitMessage changes=changes }}
-<br/>
-<br/>     {{{showEmoji ':smile_cat:'}}} {{> JenkinsBuilds.blameMessage culprits=culprits }}
-<br/>
-<br/>
+{{#if cause}}
+    <br/>{{> JenkinsBuilds.causeMessage cause=cause }}
+{{/if}}
+<br/>{{> JenkinsBuilds.gitMessage changes=changes }}
 <br/>     {{{build_url}}}
+<br/>

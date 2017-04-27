@@ -1,11 +1,21 @@
-git changes<br/>
-{{#each changes}}
-    {{{ firstLine comment }}}<br/>
-    {{ author.fullName }}<br/>
-    Changed Files:<br/>
-    {{#each paths }}
-        {{ file }}  ({{ editType }})<br/>
-    {{/each}}
 <br/>
-{{/each}}
+====================
+<br/>
+====== Git Changes ======
+        <br/>
+        {{#each changes}}
+            __________________________________
+            {{ author.fullName }}
+                {{{ firstLine comment }}}
+            Changed Files:<br/>
+            {{#each paths }}
+                {{#ifCond editType '==' 'edit'}}{{{showEmoji ':pencil2:'}}} {{ file }} {{/ifCond}}
+                {{#ifCond editType '==' 'add'}}{{{showEmoji ':new:'}}} {{ file }}  {{/ifCond}}
+                {{#ifCond editType '==' 'delete'}}{{{showEmoji ':x:'}}} {{ file }} {{/ifCond}}
+            {{/each}}
+        {{/each}}
+<br/>
+====== End Git Changes ======
+<br/>
+=======================
 <br/>
