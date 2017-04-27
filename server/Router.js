@@ -90,10 +90,6 @@ class Router {
   }
 
   showHelpFor(helpType, session, bot) {
-    if(helpType === null) {
-      HelpRequestsController.showGeneralHelp(session, bot);
-    }
-
     if(!helpType) {
       HelpRequestsController.showGeneralHelp(session, bot);
       return;
