@@ -1,1 +1,10 @@
-<br/>[Jenkins Build]  (puke) Failed again -- {{build_name}}  ➔  {{build_url}} {{build_label}}/
+<br/>{{{showEmoji ':construction_worker:'}}} {{{environment}}} Failed again ➔ *{{{build_name}}}* #{{{build_label}}}
+{{#if cause}}
+    <br/>{{> JenkinsBuilds.causeMessage cause=cause }}
+{{/if}}
+<br/>{{> JenkinsBuilds.gitMessage changes=changes }}
+<br/>     {{{build_url}}}
+<br/>
+<br/>{{{showEmoji ':construction_worker:'}}} [Jenkins Build]
+
+

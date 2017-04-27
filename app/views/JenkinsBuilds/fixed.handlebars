@@ -1,5 +1,9 @@
-<br/>{{{showEmoji ':construction_worker:'}}} [Jenkins Build]
-<br/>     (rainbow) Fixed ➔ {{{build_name}}}  {{{showEmoji ':smile_cat:'}}}
-<br/>     {{> JenkinsBuilds.gitMessage thar='gaah' }}
-<br/>     {{{build_label}}}
+<br/>{{{showEmoji ':construction_worker:'}}} {{{environment}}} Fixed ➔ *{{{build_name}}}* #{{{build_label}}}
+{{#if cause}}
+    <br/>{{> JenkinsBuilds.causeMessage cause=cause }}
+{{/if}}
+<br/>{{> JenkinsBuilds.gitMessage changes=changes }}
 <br/>     {{{build_url}}}
+<br/>
+<br/>{{{showEmoji ':construction_worker:'}}} [Jenkins Build]
+

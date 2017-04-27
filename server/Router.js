@@ -95,9 +95,19 @@ class Router {
     }
 
     switch(helpType.toLowerCase()) {
-      case('subscription'): {
-        HelpRequestsController.showSubscriptionHelp(session, bot);
+      case('\\subscribe'):
+      case('subscribe'): {
+        HelpRequestsController.showSubscribeHelp(session, bot);
         break;
+      }
+      case('\\unsubscribe'):
+      case('unsubscribe'): {
+        HelpRequestsController.showUnsubscribeHelp(session, bot);
+
+        break;
+      }
+      default: {
+        HelpRequestsController.showGeneralHelp(session, bot);
       }
     }
 

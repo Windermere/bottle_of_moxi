@@ -1,9 +1,8 @@
-<br/>{{{showEmoji ':construction_worker:'}}} [Jenkins Build]
-<br/>
-<br/>     (slamdunk) Deployed ➔ {{{build_name}}} #{{{build_label}}}
+<br/>{{{showEmoji ':construction_worker:'}}} {{{environment}}} Deployed ➔ *{{{build_name}}}* #{{{build_label}}}
 {{#if cause}}
     <br/>{{> JenkinsBuilds.causeMessage cause=cause }}
 {{/if}}
 <br/>{{> JenkinsBuilds.gitMessage changes=changes }}
 <br/>     {{{build_url}}}
 <br/>
+<br/>{{{showEmoji ':construction_worker:'}}} [Jenkins Build]

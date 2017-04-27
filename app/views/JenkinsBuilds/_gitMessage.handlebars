@@ -1,21 +1,12 @@
-<br/>
-====================
-<br/>
-====== Git Changes ======
-        <br/>
+ <br/>
         {{#each changes}}
-            __________________________________
-            {{ author.fullName }}
-                {{{ firstLine comment }}}
-            Changed Files:<br/>
-            {{#each paths }}
-                {{#ifCond editType '==' 'edit'}}{{{showEmoji ':pencil2:'}}} {{ file }} {{/ifCond}}
-                {{#ifCond editType '==' 'add'}}{{{showEmoji ':new:'}}} {{ file }}  {{/ifCond}}
-                {{#ifCond editType '==' 'delete'}}{{{showEmoji ':x:'}}} {{ file }} {{/ifCond}}
-            {{/each}}
+            __________________________________<br/>
+            {{{showEmoji ':bust_in_silhouette:'}}} {{ author.fullName }}<br/>
+                {{{showEmoji ':speech_balloon:'}}} {{{ firstLine comment }}}<br/>
+                {{#each paths }}
+                    {{#ifCond editType '==' 'edit'}}{{{showEmoji ':pencil2:'}}} {{ file }} {{/ifCond}}
+                    {{#ifCond editType '==' 'add'}}{{{showEmoji ':new:'}}} {{ file }}  {{/ifCond}}
+                    {{#ifCond editType '==' 'delete'}}{{{showEmoji ':x:'}}} {{ file }} {{/ifCond}}
+                {{/each}}
         {{/each}}
-<br/>
-====== End Git Changes ======
-<br/>
-=======================
 <br/>

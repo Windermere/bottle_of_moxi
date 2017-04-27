@@ -1,2 +1,8 @@
-<br/>[Jenkins Build]  :(  Failed -- {{build_name}}  ➔   {{build_label}}
-<br/>     {{build_url}}
+<br/>{{{showEmoji ':construction_worker:'}}} {{{environment}}} Failed ➔ *{{{build_name}}}* #{{{build_label}}}
+{{#if cause}}
+    <br/>{{> JenkinsBuilds.causeMessage cause=cause }}
+{{/if}}
+<br/>{{> JenkinsBuilds.gitMessage changes=changes }}
+<br/>     {{{build_url}}}
+<br/>
+<br/>{{{showEmoji ':construction_worker:'}}} [Jenkins Build]
