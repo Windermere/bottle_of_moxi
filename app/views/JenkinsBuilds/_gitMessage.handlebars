@@ -3,10 +3,8 @@ git changes<br/>
     {{{ firstLine comment }}}<br/>
     {{ author.fullName }}<br/>
     Changed Files:<br/>
-    {{#each affectedPaths }}
-        {{#each paths }}
-            {{ file }}  {{ editType }}<br/>
-        {{/each}}
+    {{#each paths }}
+        {{ file }}  ({{ editType }})<br/>
     {{/each}}
 <br/>
 {{/each}}
