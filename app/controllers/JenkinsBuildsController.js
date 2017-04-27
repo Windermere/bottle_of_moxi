@@ -1,6 +1,5 @@
 const ApplicationController = require('./ApplicationController');
 const Jenkins = require('../models/resource/Jenkins');
-const JenkinsBuildSubscription = require('../models/JenkinsBuildSubscription');
 
 class JenkinsBuildsController extends ApplicationController {
 
@@ -41,7 +40,7 @@ class JenkinsBuildsController extends ApplicationController {
     let cause = null;
     let changeItems = null;
     let output = null;
-    let environment = JenkinsBuildSubscription.environmentNameForBuildName(build.name);
+    const env = this.environmentNameForBuildName(build.name);
 
     if (this.detailsHasCause(actions)) {
       cause = actions.causes[0].shortDescription;
@@ -61,7 +60,7 @@ class JenkinsBuildsController extends ApplicationController {
           cause,
           changes: changeItems,
           culprits,
-          environment
+          environment: env
         });
       console.log(output);
     }
@@ -77,10 +76,26 @@ class JenkinsBuildsController extends ApplicationController {
     return (actions !== undefined && actions.causes !== undefined && actions.causes[0] !== undefined && actions.causes[0].shortDescription !== undefined);
   }
 
-  static environmentForBuild(buildName) {
-
+  static environmentNameForBuildName(name) {
+    switch (true) {
+      case (/.*\(QA.*/.test(name)):
+      case (/.*\(Build\)/.test(name)): {
+        return 'QA';
+        break;
+      }
+      case (/.*\(Devint.*/.test(name)): {
+        return 'Devint';
+        break;
+      }
+      case (/.*\(Production.*/.test(name)): {
+        return 'Production';
+        break;
+      }
+      default: {
+        return '';
+      }
+    }
   }
-
 }
 
 module.exports = JenkinsBuildsController;

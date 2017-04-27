@@ -83,26 +83,6 @@ class JenkinsBuildSubscription extends Subscription {
     }
   }
 
-  static environmentNameForBuildName(name) {
-    switch (true) {
-      case (/.*\(QA.*/.test(name)):
-      case (/.*\(Build\)/.test(name)): {
-        return 'QA';
-        break;
-      }
-      case (/.*\(Devint.*/.test(name)): {
-        return 'Devint';
-        break;
-      }
-      case (/.*\(Production.*/.test(name)): {
-        return 'Production';
-        break;
-      }
-      default: {
-        '';
-      }
-    }
-  }
 
   static storeName() {
     return 'JenkinsBuildSubscription';

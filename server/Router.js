@@ -94,6 +94,10 @@ class Router {
       HelpRequestsController.showGeneralHelp(session, bot);
     }
 
+    if(!helpType) {
+      HelpRequestsController.showGeneralHelp(session, bot);
+      return;
+    }
     switch(helpType.toLowerCase()) {
       case('\\subscribe'):
       case('subscribe'): {

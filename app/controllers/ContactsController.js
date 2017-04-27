@@ -1,4 +1,5 @@
 const ApplicationController = require('./ApplicationController');
+const HelpRequestsController = require('./HelpRequestsController');
 
 class ContactsController extends ApplicationController {
 
@@ -9,7 +10,7 @@ class ContactsController extends ApplicationController {
       const greeting = `Hello ${name}` || 'there' + '... welcome to bottle of moxi (beer).';
       const reply = new bot.builder.Message()
         .address(message.address)
-        .text(`${greeting}\n${HelpManager.generalHelp()}`);
+        .text(`${greeting}<br/>${HelpRequestsController.renderTemplate('general')}`);
       bot.connection.send(reply);
     } else {
       // delete their data
