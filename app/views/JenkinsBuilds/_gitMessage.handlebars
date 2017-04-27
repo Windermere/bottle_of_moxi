@@ -1,1 +1,13 @@
-git changes  {{{changes}}}<br/>
+git changes<br/>
+{{#each changes}}
+    {{{ firstLine comment }}}<br/>
+    {{ author.fullName }}<br/>
+    Changed Files:<br/>
+    {{#each affectedPaths }}
+        {{#each paths }}
+            {{ file }}  {{ editType }}<br/>
+        {{/each}}
+    {{/each}}
+<br/>
+{{/each}}
+<br/>

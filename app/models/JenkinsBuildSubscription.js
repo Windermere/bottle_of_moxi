@@ -63,16 +63,17 @@ class JenkinsBuildSubscription extends Subscription {
   }
 
   static findAllInGroupFor(name, allSubscriptions) {
-    switch (name) {
-      case (/.*\(QA.*/): {
+    switch (true) {
+      case (/.*\(QA.*/.test(name)):
+      case (/.*\(Build\)/.test(name)): {
         return allSubscriptions['qa'];
         break;
       }
-      case (/.*\(Devint.*/): {
+      case (/.*\(Devint.*/.test(name)): {
         return allSubscriptions['devint'];
         break;
       }
-      case (/.*\(Production.*/): {
+      case (/.*\(Production.*/.test(name)): {
         return allSubscriptions['prod'];
         break;
       }
