@@ -21,8 +21,8 @@ class SubscriptionsController extends ApplicationController {
     if(subscription) {
       const output = this.renderTemplate('Subscriptions/deleteSubscription',
         { user_name: session.message.user.name,
-          subscription_type: subscription.subType,
-          subscription_name: subscription.subName
+          subscription_type: subType,
+          subscription_name: subName
         });
 
       session.send(output);
@@ -37,8 +37,8 @@ class SubscriptionsController extends ApplicationController {
     const subscription = this.generateSubscription({ text, subType, subName, session });
     const output = this.renderTemplate('Subscriptions/createSubscription',
       { user_name: session.message.user.name,
-        subscription_type: subscription.subType,
-        subscription_name: subscription.subName });
+        subscription_type: subType,
+        subscription_name: subName });
 
     session.send(output);
   }
