@@ -5,7 +5,9 @@ class JenkinsBuildsController extends ApplicationController {
 
   static transitionMessage(previousBuild, build, handler) {
     const transition = `${previousBuild ? previousBuild.lastBuildStatus : 'Unknown'} > ${build.lastBuildStatus}`;
+    var environment = this.environmentNameForBuildName(build.name);
     var template = null;
+
     switch (transition) {
       case 'Success > Failure':
         template = 'failed';
@@ -17,7 +19,9 @@ class JenkinsBuildsController extends ApplicationController {
         template = 'fixed';
         break;
       case 'Success > Success':
-        template = 'deployed';
+        if (environment.toLowerCase() !== 'devint') {
+          template = 'deployed';
+        }
         break;
     }
     if(template) {
