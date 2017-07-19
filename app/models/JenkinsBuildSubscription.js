@@ -73,6 +73,10 @@ class JenkinsBuildSubscription extends Subscription {
         return allSubscriptions['devint'];
         break;
       }
+      case (/.*Test\).*/.test(name)): {
+        return allSubscriptions['tests'];
+        break;
+      }
       case (/.*\(Production.*/.test(name)): {
         return allSubscriptions['prod'];
         break;

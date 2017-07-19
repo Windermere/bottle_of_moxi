@@ -61,7 +61,7 @@ class JenkinsBuildMonitor {
   updateLastBuildFor(b) {
     var jenkinsBuild = JenkinsBuild.find({name: b.name});
     if(!jenkinsBuild) {
-      var build = JenkinsBuild.create(b)
+      var build = JenkinsBuild.create(b);
     } else {
       if(!jenkinsBuild)
         throw new Error(JSON.stringify(jenkinsBuild));

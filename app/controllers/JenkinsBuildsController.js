@@ -60,6 +60,7 @@ class JenkinsBuildsController extends ApplicationController {
         {
           build_name: build.name,
           build_url: `${build.webUrl + build.lastBuildLabel}/`,
+          deployment_time: new Date().toLocaleString(),
           build_label: build.lastBuildLabel,
           cause,
           changes: changeItems,
@@ -85,6 +86,10 @@ class JenkinsBuildsController extends ApplicationController {
       case (/.*\(QA.*/.test(name)):
       case (/.*\(Build\)/.test(name)): {
         return 'QA';
+        break;
+      }
+      case (/.*Test\).*/.test(name)): {
+        return 'Test';
         break;
       }
       case (/.*\(Devint.*/.test(name)): {
