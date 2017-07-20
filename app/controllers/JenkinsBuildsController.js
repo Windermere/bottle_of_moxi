@@ -8,28 +8,31 @@ class JenkinsBuildsController extends ApplicationController {
     var environment = this.environmentNameForBuildName(build.name);
     var template = null;
 
-    switch (transition) {
-      case 'Success > Failure':
-        template = 'failed';
-        break;
-      case 'Failure > Failure':
-        template = 'failedAgain';
-        break;
-      case 'Failure > Success':
-        template = 'fixed';
-        break;
-      case 'Success > Success':
-        if (environment.toLowerCase() !== 'devint') {
-          template = 'deployed';
-        }
-        break;
-    }
+    template = JenkinsBuildsController.getBuildTemplateFor(transition, environment);
+
     if(template) {
-      Jenkins.fetchBuild(build, (details) => {
+      Jenkins.fetchBuild(build, environment, (details) => {
         const out = JSON.parse(details);
         const message = JenkinsBuildsController.messageFor(build, out, template);
         handler(message);
       });
+    }
+  }
+
+  static getBuildTemplateFor(transition, environment) {
+    switch (transition) {
+      case 'Success > Failure':
+        return 'failed';
+      case 'Failure > Failure':
+        return 'failedAgain';
+      case 'Failure > Success':
+        return 'fixed';
+      case 'Success > Success':
+        if (environment.toLowerCase() !== 'devint' && environment.toLowerCase() !== 'tests') {
+          return 'deployed';
+        }
+      default:
+        return null;
     }
   }
 
@@ -38,13 +41,17 @@ class JenkinsBuildsController extends ApplicationController {
       throw new Error('build required');
     }
 
-    const actions = details.actions[0];
+    const actions = (details.actions !== undefined) ? details.actions[0] : {};
     const changes = details.changeSet;
     const culprits = details.culprits;
     let cause = null;
     let changeItems = null;
+    let testResult = null;
+    let buildUrl = null;
     let output = null;
     const env = this.environmentNameForBuildName(build.name);
+
+    if(env === '') return null;
 
     if (this.detailsHasCause(actions)) {
       cause = actions.causes[0].shortDescription;
@@ -55,17 +62,25 @@ class JenkinsBuildsController extends ApplicationController {
 
 
 
-    if (changeItems) {
+    if (changeItems || this.isAUnitTestDeployment(build)) {
+      if(this.isAUnitTestDeployment(build)) {
+        testResult = {total: details.totalCount, skipped: details.skipCount, failed: details.failCount};
+        buildUrl = `${build.webUrl + build.lastBuildLabel}/testReport`;
+      } else {
+        buildUrl = `${build.webUrl + build.lastBuildLabel}/`;
+      }
+
       output = this.renderTemplate(template,
         {
           build_name: build.name,
-          build_url: `${build.webUrl + build.lastBuildLabel}/`,
+          build_url: buildUrl,
           deployment_time: new Date().toLocaleString(),
           build_label: build.lastBuildLabel,
           cause,
           changes: changeItems,
           culprits,
-          environment: env
+          environment: env,
+          testResult
         });
       console.log(output);
     }
@@ -77,28 +92,31 @@ class JenkinsBuildsController extends ApplicationController {
     return (changes !== undefined && changes.items !== undefined && changes.items[0] !== undefined);
   }
 
+  static isAUnitTestDeployment(build) {
+    return (/.*\(Devint Test\).*/.test(build.name));
+  }
+
   static detailsHasCause(actions) {
     return (actions !== undefined && actions.causes !== undefined && actions.causes[0] !== undefined && actions.causes[0].shortDescription !== undefined);
   }
 
   static environmentNameForBuildName(name) {
     switch (true) {
+      case (/.*Reconnect Offline Slaves.*/.test(name)): {
+        return '';
+      }
       case (/.*\(QA.*/.test(name)):
       case (/.*\(Build\)/.test(name)): {
         return 'QA';
-        break;
       }
-      case (/.*Test\).*/.test(name)): {
-        return 'Test';
-        break;
+      case (/.*\(Devint Test\).*/.test(name)): {
+        return 'Tests';
       }
       case (/.*\(Devint.*/.test(name)): {
         return 'Devint';
-        break;
       }
       case (/.*\(Production.*/.test(name)): {
         return 'Production';
-        break;
       }
       default: {
         return '';

@@ -42,21 +42,34 @@ class SubscriptionsController extends ApplicationController {
 
     session.send(output);
   }
+  static getSubscriptions(session) {
+    const text = session.message.text;
+    const subType = this.requestTypeFor(text);
+    const subName = this.requestNameFor(text);
+
+    const subscriptions = this.fetchSubscriptions({ text, subType, subName, session });
+
+
+    const output = this.renderTemplate('Subscriptions/showSubscriptions',
+      { subscriptions,
+        subscription_type: subType,
+        subscription_name: subName });
+
+    session.send(output);
+  }
 
   static generateSubscription(opts) {
     switch(opts.subType) {
       case ('jenkins'): {
         return JenkinsBuildSubscription.create(opts);
-        break;
       }
     }
   }
 
-  static findSubscription(opts) {
+  static fetchSubscriptions(opts) {
     switch(opts.subType) {
       case ('jenkins'): {
-        return JenkinsBuildSubscription.find(opts);
-        break;
+        return JenkinsBuildSubscription.findAllFor(opts.subName);
       }
     }
   }
@@ -65,7 +78,6 @@ class SubscriptionsController extends ApplicationController {
     switch(opts.subType) {
       case ('jenkins'): {
         return JenkinsBuildSubscription.delete(opts);
-        break;
       }
     }
   }

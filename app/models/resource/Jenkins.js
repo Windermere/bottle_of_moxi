@@ -13,8 +13,10 @@ class Jenkins {
       });
   }
 
-  static fetchBuild(build, buildHandler) {
-    const uri = `${build.webUrl}${build.lastBuildLabel}/api/json`;
+  static fetchBuild(build, environment, buildHandler) {
+    const uri = (environment.toLowerCase() === 'tests') ?
+      `${build.webUrl}${build.lastBuildLabel}/testReport/api/json`:
+      `${build.webUrl}${build.lastBuildLabel}/api/json`;
     request.get(uri)
       .end((err, res) =>{
         if (!err) {

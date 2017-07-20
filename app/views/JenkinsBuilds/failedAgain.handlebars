@@ -1,5 +1,8 @@
 <br />{{{deployment_time}}}
-<br/>{{{showEmoji ':construction_worker:'}}} {{{environment}}} Failed again ➔ *{{{build_name}}}* #{{{build_label}}}
+<br/> *{{{build_name}}}* #{{{build_label}}}
+<br />
+<br/>{{{showEmoji ':skull:'}}} Failed... *Again*
+<br/>{{{showEmoji ':construction_worker:'}}} {{{environment}}}
 {{#if cause}}
     <br/>{{> JenkinsBuilds.causeMessage cause=cause }}
 {{/if}}
@@ -8,4 +11,5 @@
 <br/>
 <br/>{{{showEmoji ':construction_worker:'}}} [Jenkins Build]
 
+<br/>{{#ifCond environment '==' 'Tests'}} {{> JenkinsBuilds.testsMessage testResult=testResult }} {{/ifCond}}
 
