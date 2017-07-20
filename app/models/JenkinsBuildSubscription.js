@@ -69,7 +69,7 @@ class JenkinsBuildSubscription extends Subscription {
         return allSubscriptions['qa'];
         break;
       }
-      case (/.*\(Devint Test\).*/.test(name)): {
+      case (/.*\(Unit Tests\).*/.test(name)): {
         return allSubscriptions['tests'];
         break;
       }

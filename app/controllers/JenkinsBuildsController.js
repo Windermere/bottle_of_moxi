@@ -93,7 +93,7 @@ class JenkinsBuildsController extends ApplicationController {
   }
 
   static isAUnitTestDeployment(build) {
-    return (/.*\(Devint Test\).*/.test(build.name));
+    return (/.*\(Unit Tests\).*/.test(build.name));
   }
 
   static detailsHasCause(actions) {
@@ -109,7 +109,7 @@ class JenkinsBuildsController extends ApplicationController {
       case (/.*\(Build\)/.test(name)): {
         return 'QA';
       }
-      case (/.*\(Devint Test\).*/.test(name)): {
+      case (/.*\(Unit Tests\).*/.test(name)): {
         return 'Tests';
       }
       case (/.*\(Devint.*/.test(name)): {
